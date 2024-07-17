@@ -147,6 +147,7 @@ class AwsClient {
     Map<Header, String>? headers,
     Object? body,
   }) async {
+    // TODO(stefanhk31): handle exceptions!
     final request = AWSHttpRequest(
       method: AWSHttpMethod.fromString(method.value),
       uri: uri,

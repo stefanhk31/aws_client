@@ -20,7 +20,21 @@ dart pub add aws_client
 
 ## Usage 
 
-// TODO: add info about access keys in the environment
+Using this client requires access credentials to AWS. By default, the `AWSSigV4Signer` injected into this client 
+pulls credentials from your environment via the `AWSCredentialsProvider.environment()` provider.
+
+On mobile and web, this means using the Dart environment which is configured by passing the --dart-define flag to your flutter commands, e.g.
+
+```sh
+$ flutter run --dart-define=AWS_ACCESS_KEY_ID=... --dart-define=AWS_SECRET_ACCESS_KEY=...
+```
+
+On Desktop, credentials are retrieved from the system's environment using [Platform.environment](https://api.dart.dev/stable/dart-io/Platform/environment.html).
+
+The signer works by transforming HTTP requests using your credentials to create _signed_ HTTP requests which can be sent off in the
+same way as normal HTTP requests.
+
+To override this default, you can pass your own `AWSSigV4Signer`, and overriding the `credentialsProvider` parameter of the signer.  
 
 ## Continuous Integration 🤖
 
