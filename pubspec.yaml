@@ -1,0 +1,17 @@
+name: aws_client
+description: A client to call AWS services.
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.4.0
+
+dependencies:
+  aws_common: ^0.2.4
+  aws_signature_v4: ^0.2.1
+
+dev_dependencies:
+  mocktail: ^1.0.4
+  test: ^1.25.7
+  very_good_analysis: ^6.0.0
+
