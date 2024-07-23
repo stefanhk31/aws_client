@@ -8,7 +8,8 @@ extension AwsHttpResponseExtension on AWSBaseHttpResponse {
   /// Decodes the response body as JSON. Default encoding is UTF-8.
   Future<Map<String, dynamic>> toJson({Encoding encoding = utf8}) async {
     try {
-      return await decodeBody(encoding: encoding) as Map<String, dynamic>;
+      final jsonString = await decodeBody(encoding: encoding);
+      return Map<String, dynamic>.from(jsonDecode(jsonString) as Map);
     } on Exception catch (e) {
       throw AwsMalformedResponseException(message: e.toString());
     }
