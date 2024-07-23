@@ -164,7 +164,7 @@ class AwsClient {
       final response = await signedRequest.send(_client).response;
       final jsonBody = await response.toJson();
 
-      if (response.statusCode != 200) {
+      if (response.statusCode >= 400) {
         throw AwsClientException(
           statusCode: response.statusCode,
           body: jsonBody,
