@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:aws_client/aws_client.dart';
+import 'package:aws_client/src/extensions/aws_http_response_extension.dart';
 import 'package:aws_common/aws_common.dart';
 import 'package:aws_signature_v4/aws_signature_v4.dart';
 
@@ -147,21 +149,33 @@ class AwsClient {
     Map<Header, String>? headers,
     Object? body,
   }) async {
-    // TODO(stefanhk31): handle exceptions!
-    final request = AWSHttpRequest(
-      method: AWSHttpMethod.fromString(method.value),
-      uri: uri,
-      headers: headers?.toStringMap(),
-      body: jsonEncode(body).codeUnits,
-    );
+    try {
+      final request = AWSHttpRequest(
+        method: AWSHttpMethod.fromString(method.value),
+        uri: uri,
+        headers: headers?.toStringMap(),
+        body: jsonEncode(body).codeUnits,
+      );
 
-    final scope = AWSCredentialScope(region: _region, service: service);
+      final scope = AWSCredentialScope(region: _region, service: service);
 
-    final signedRequest = await _signer.sign(request, credentialScope: scope);
+      final signedRequest = await _signer.sign(request, credentialScope: scope);
 
-    final response = await signedRequest.send(_client).response;
-    return fromJson(
-      json.decode(await response.decodeBody()) as Map<String, dynamic>,
-    );
+      final response = await signedRequest.send(_client).response;
+      final jsonBody = await response.toJson();
+
+      if (response.statusCode != 200) {
+        throw AwsClientException(
+          statusCode: response.statusCode,
+          body: jsonBody,
+        );
+      }
+      return fromJson(jsonBody);
+    } on Exception catch (e, st) {
+      throw AwsClientException(
+        statusCode: HttpStatus.internalServerError,
+        body: {e.toString(): st.toString()},
+      );
+    }
   }
 }
