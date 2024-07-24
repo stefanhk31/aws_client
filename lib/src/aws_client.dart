@@ -115,6 +115,9 @@ enum Header {
   }
 }
 
+/// The default error message for an uncaught internal server error.
+const internalServerErrorMessage = 'AWS Client Error';
+
 /// {@template aws_client}
 /// A client to call AWS services.
 /// {@endtemplate}
@@ -178,7 +181,7 @@ class AwsClient {
     } on Exception catch (e, st) {
       throw AwsClientException(
         statusCode: HttpStatus.internalServerError,
-        body: {e.toString(): st.toString()},
+        body: {internalServerErrorMessage: 'Exception: $e, StackTrace: $st'},
       );
     }
   }
