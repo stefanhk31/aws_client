@@ -171,6 +171,10 @@ class AwsClient {
         );
       }
       return fromJson(jsonBody);
+    } on AwsClientException {
+      rethrow;
+    } on AwsMalformedResponseException {
+      rethrow;
     } on Exception catch (e, st) {
       throw AwsClientException(
         statusCode: HttpStatus.internalServerError,
