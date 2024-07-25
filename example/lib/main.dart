@@ -1,3 +1,4 @@
+import 'package:example/tabs/tabs.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -55,7 +56,7 @@ class _AwsClientExamplesState extends State<AwsClientExamples>
       body: TabBarView(
         controller: _tabController,
         children: const [
-          DynamoTab(),
+          Dynamo(),
         ],
       ),
       bottomNavigationBar: TabBar(
@@ -63,20 +64,6 @@ class _AwsClientExamplesState extends State<AwsClientExamples>
         tabs: const [
           Tab(text: 'Dynamo'),
         ],
-      ),
-    );
-  }
-}
-
-class DynamoTab extends StatelessWidget {
-  const DynamoTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'Dynamo Tab',
-        style: TextStyle(fontSize: 24),
       ),
     );
   }
