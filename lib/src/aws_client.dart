@@ -164,7 +164,7 @@ class AwsClient {
 
       final signedRequest = await _signer.sign(request, credentialScope: scope);
 
-      final response = await signedRequest.send(_client).response;
+      final response = await signedRequest.send(client: _client).response;
       final jsonBody = await response.toJson();
 
       if (response.statusCode >= 400) {

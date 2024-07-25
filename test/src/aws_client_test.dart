@@ -266,7 +266,7 @@ void main() {
           statusCode: HttpStatus.ok,
           body: utf8.encode('{"count": 1, "users": [{"username": "example"}]}'),
         );
-        when(() => signedRequest.send(httpClient)).thenAnswer(
+        when(() => signedRequest.send(client: httpClient)).thenAnswer(
           (_) => awsResponse(successBody),
         );
         final result = await awsClient.sendSignedRequest(
@@ -285,7 +285,7 @@ void main() {
           statusCode: HttpStatus.badRequest,
           body: utf8.encode('{"message": "Bad request"}'),
         );
-        when(() => signedRequest.send(httpClient)).thenAnswer(
+        when(() => signedRequest.send(client: httpClient)).thenAnswer(
           (_) => awsResponse(failedBody),
         );
 
@@ -318,7 +318,7 @@ void main() {
           statusCode: HttpStatus.ok,
           body: utf8.encode('not valid json'),
         );
-        when(() => signedRequest.send(httpClient)).thenAnswer(
+        when(() => signedRequest.send(client: httpClient)).thenAnswer(
           (_) => awsResponse(malformedBody),
         );
 
