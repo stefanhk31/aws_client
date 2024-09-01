@@ -37,7 +37,7 @@ class _AwsClientExamplesState extends State<AwsClientExamples>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 1, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -55,14 +55,13 @@ class _AwsClientExamplesState extends State<AwsClientExamples>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [
-          Dynamo(),
-        ],
+        children: const [Dynamo(), ElastiCache()],
       ),
       bottomNavigationBar: TabBar(
         controller: _tabController,
         tabs: const [
           Tab(text: 'Dynamo'),
+          Tab(text: 'ElastiCache'),
         ],
       ),
     );

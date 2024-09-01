@@ -2,19 +2,19 @@ import 'package:aws_client/aws_client.dart';
 import 'package:example/extensions/null_or_empty_extension.dart';
 import 'package:flutter/material.dart';
 
-enum DynamoStatus { initial, loading, loaded, error }
+enum ElastiCacheStatus { initial, loading, loaded, error }
 
-class Dynamo extends StatefulWidget {
-  const Dynamo({super.key});
+class ElastiCache extends StatefulWidget {
+  const ElastiCache({super.key});
 
   @override
-  DynamoState createState() => DynamoState();
+  ElastiCacheState createState() => ElastiCacheState();
 }
 
-class DynamoState extends State<Dynamo> {
+class ElastiCacheState extends State<ElastiCache> {
   String _region = '';
-  String _tableName = '';
-  DynamoStatus _status = DynamoStatus.initial;
+  String _cacheClusterId = '';
+  ElastiCacheStatus _status = ElastiCacheStatus.initial;
   Map<String, dynamic> _result = {};
   AwsClientException? _awsClientException;
   AwsMalformedResponseException? _awsMalformedResponseException;
@@ -41,17 +41,17 @@ class DynamoState extends State<Dynamo> {
         ),
         TextFormField(
           decoration: const InputDecoration(
-            labelText: 'Table Name',
+            labelText: 'Cache Cluster ID',
           ),
           validator: (value) {
             if (value.isNullOrEmpty) {
-              return 'Please enter a table name';
+              return 'Please enter a cache cluster identifier';
             }
             return null;
           },
           onChanged: (value) {
             setState(() {
-              _tableName = value;
+              _cacheClusterId = value;
             });
           },
         ),
@@ -60,18 +60,18 @@ class DynamoState extends State<Dynamo> {
             final client = AwsClient(region: _region);
             try {
               setState(() {
-                _status = DynamoStatus.loading;
+                _status = ElastiCacheStatus.loading;
               });
               final result = await client.sendSignedRequest(
-                service: AWSService.dynamoDb,
+                service: AWSService.elastiCache,
                 method: AWSHttpMethod.get,
                 uri: Uri.parse(
-                    'https://dynamodb.$_region.amazonaws.com/$_tableName'),
+                    'https://elasticache.$_region.amazonaws.com/?Action=DescribeCacheClusters&CacheClusterIdentifier=$_cacheClusterId&SignatureMethod=HmacSHA256&SignatureVersion=4&&Version=2014-12-01'),
                 fromJson: (json) => json,
               );
               setState(() {
                 _result = result;
-                _status = DynamoStatus.loaded;
+                _status = ElastiCacheStatus.loaded;
               });
             } on Exception catch (e) {
               setState(() {
@@ -80,22 +80,23 @@ class DynamoState extends State<Dynamo> {
                 } else if (e is AwsMalformedResponseException) {
                   _awsMalformedResponseException = e;
                 }
-                _status = DynamoStatus.error;
+                _status = ElastiCacheStatus.error;
               });
             }
           },
           child: const Text('Submit'),
         ),
         switch (_status) {
-          DynamoStatus.initial => const Text('Enter a region and table name'),
-          DynamoStatus.loading => const CircularProgressIndicator(),
-          DynamoStatus.loaded => Column(
+          ElastiCacheStatus.initial =>
+            const Text('Enter a region and cache cluster identifier'),
+          ElastiCacheStatus.loading => const CircularProgressIndicator(),
+          ElastiCacheStatus.loaded => Column(
               children: [
                 for (final entry in _result.entries)
                   Text('${entry.key} : ${entry.value.toString()}'),
               ],
             ),
-          DynamoStatus.error => Expanded(
+          ElastiCacheStatus.error => Expanded(
               child: _awsClientException != null
                   ? Text('An Error Occurred!\n '
                       'Status Code: ${_awsClientException?.statusCode ?? 0}\n'
