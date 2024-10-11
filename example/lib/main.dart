@@ -55,13 +55,12 @@ class _AwsClientExamplesState extends State<AwsClientExamples>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const [Dynamo(), ElastiCache()],
+        children: const [S3()],
       ),
       bottomNavigationBar: TabBar(
         controller: _tabController,
         tabs: const [
-          Tab(text: 'Dynamo'),
-          Tab(text: 'ElastiCache'),
+          Tab(text: 'S3'),
         ],
       ),
     );
